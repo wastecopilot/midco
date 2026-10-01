@@ -1,0 +1,493 @@
+/*
+ * effects.css — animation & interaction styles (hand-written).
+ * Start states only apply when <html class="js"> is set, so the page is fully
+ * visible without JavaScript. main.js adds .is-in / .is-open / .is-scrolled.
+ */
+
+:root {
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-wipe: cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+/* ------------------------------------------------------------------ */
+/* Scroll-triggered headline reveal (words rise out of a masked line)  */
+/* ------------------------------------------------------------------ */
+.rv-w {
+  display: inline-block;
+  overflow: hidden;
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+  vertical-align: bottom;
+}
+.rv-i {
+  display: inline-block;
+}
+.js [data-reveal] .rv-i {
+  transform: translateY(110%) rotate(4deg);
+  opacity: 0;
+  transition:
+    transform 0.9s var(--ease-out) var(--d, 0ms),
+    opacity 0.9s var(--ease-out) var(--d, 0ms);
+}
+.js [data-reveal].is-in .rv-i {
+  transform: none;
+  opacity: 1;
+}
+
+/* ------------------------------------------------------------------ */
+/* Clip-path wipe into each service section                            */
+/* ------------------------------------------------------------------ */
+.js [data-wipe] {
+  clip-path: inset(6% 5% 6% 5% round 48px);
+  transition: clip-path 1.1s var(--ease-wipe);
+}
+.js [data-wipe].is-in {
+  clip-path: inset(0% 0% 0% 0% round 0px);
+}
+
+/* ------------------------------------------------------------------ */
+/* Staggered grid entrance (Why Midco)                                 */
+/* ------------------------------------------------------------------ */
+.js [data-stagger] .stg {
+  opacity: 0;
+  transform: translateY(40px) scale(0.96);
+  transition:
+    opacity 0.8s var(--ease-out) var(--d, 0ms),
+    transform 0.8s var(--ease-out) var(--d, 0ms),
+    box-shadow 0.5s ease;
+}
+.js [data-stagger].is-in .stg {
+  opacity: 1;
+  transform: none;
+}
+
+/* ------------------------------------------------------------------ */
+/* Parallax layers & photos (transform driven by main.js)              */
+/* ------------------------------------------------------------------ */
+[data-parallax] {
+  will-change: transform;
+}
+
+/* ------------------------------------------------------------------ */
+/* Magnetic buttons (translate driven by main.js)                      */
+/* ------------------------------------------------------------------ */
+.magnetic {
+  will-change: translate;
+  transition-property: box-shadow, background-color, scale;
+}
+.magnetic:active {
+  scale: 0.97;
+}
+
+/* ------------------------------------------------------------------ */
+/* 3D tilt plan cards                                                  */
+/* ------------------------------------------------------------------ */
+[data-tilt] {
+  will-change: transform;
+}
+.tilt-glare {
+  background: radial-gradient(420px circle at var(--gx, 50%) var(--gy, 50%), rgba(0, 180, 227, 0.1), transparent 45%);
+}
+
+/* ------------------------------------------------------------------ */
+/* Header: scrolled state, sliding active pill, mobile menu            */
+/* ------------------------------------------------------------------ */
+.nav-bar.is-scrolled {
+  border-color: #d3d6db;
+  box-shadow: 0 10px 30px -20px rgba(0, 79, 110, 0.35);
+}
+.nav-pill {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.nav-pill.is-visible {
+  opacity: 1;
+}
+.nav-link.is-active {
+  color: #006c9d;
+}
+
+.mobile-nav {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition:
+    grid-template-rows 0.35s var(--ease-out),
+    opacity 0.35s var(--ease-out);
+}
+.mobile-nav > ul {
+  min-height: 0;
+}
+.mobile-nav.is-open {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+.mobile-nav.is-open > ul {
+  padding-bottom: 1rem;
+}
+[data-menu-toggle] .menu-close,
+[data-menu-toggle][aria-expanded='true'] .menu-open {
+  display: none;
+}
+[data-menu-toggle][aria-expanded='true'] .menu-close {
+  display: inline;
+}
+
+/* ------------------------------------------------------------------ */
+/* FAQ accordion                                                       */
+/* ------------------------------------------------------------------ */
+.faq-a {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition:
+    grid-template-rows 0.35s var(--ease-out),
+    opacity 0.35s var(--ease-out);
+}
+.faq-a > div {
+  min-height: 0;
+}
+.faq-item.is-open .faq-a {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+.faq-item.is-open {
+  border-color: #d3d6db;
+  box-shadow: 0 20px 50px -30px rgba(0, 79, 110, 0.5);
+}
+.faq-icon {
+  background: #f0faff;
+  color: #0074a1;
+}
+.faq-item.is-open .faq-icon {
+  rotate: 45deg;
+  background: #0074a1;
+  color: #ffffff;
+}
+
+/* ------------------------------------------------------------------ */
+/* ZIP checker result                                                  */
+/* ------------------------------------------------------------------ */
+.zip-result {
+  animation: zip-in 0.35s var(--ease-out) both;
+}
+@keyframes zip-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+/* ================================================================== */
+/* PREMIUM HERO                                                        */
+/* ================================================================== */
+
+/* Staggered load-in for hero copy, ZIP box, offer card and chips */
+.js [data-hero] .hero-in {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 1s var(--ease-out) var(--d, 0ms),
+    transform 1s var(--ease-out) var(--d, 0ms);
+}
+.js [data-hero].is-loaded .hero-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* Slow Ken Burns zoom on the hero photo */
+.kenburns {
+  animation: kenburns 24s ease-in-out infinite alternate;
+  transform-origin: 70% 50%;
+  will-change: transform;
+}
+@keyframes kenburns {
+  from { transform: scale(1); }
+  to { transform: scale(1.08) translate3d(-1%, -1%, 0); }
+}
+
+/* Fine dot grid, faded out towards the photo */
+.hero-dots {
+  background-image: radial-gradient(rgba(0, 116, 161, 0.18) 1px, transparent 1.2px);
+  background-size: 22px 22px;
+  -webkit-mask-image: radial-gradient(ellipse 70% 65% at 30% 45%, #000 20%, transparent 75%);
+  mask-image: radial-gradient(ellipse 70% 65% at 30% 45%, #000 20%, transparent 75%);
+}
+
+/* Eyebrow pill with an animated gradient hairline border */
+.hero-pill {
+  position: relative;
+  isolation: isolate;
+}
+.hero-pill::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  padding: 1px;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #b000d5, #0074a1, #00b4e3, #00a999, #b000d5);
+  background-size: 300% 100%;
+  animation: flow-x 6s linear infinite;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+/* Shimmering gradient on "Midco Fiber." */
+.text-shimmer {
+  background-image: linear-gradient(90deg, #b000d5 0%, #0074a1 25%, #00b4e3 50%, #0074a1 75%, #b000d5 100%);
+  background-size: 200% 100%;
+  animation: flow-x 5s linear infinite;
+}
+
+/* Pulsing "live" dots */
+.live-dot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: inherit;
+  animation: ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+@keyframes ping {
+  75%, 100% { transform: scale(2.6); opacity: 0; }
+}
+
+/* Floating glass stat chips */
+.float-1 { animation: float 6s ease-in-out infinite; }
+.float-2 { animation: float 7s ease-in-out -2s infinite; }
+.float-3 { animation: float 6.5s ease-in-out -4s infinite; }
+@keyframes float {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -12px, 0); }
+}
+
+/* Purple offer ribbon: flowing gradient */
+.ribbon {
+  background: linear-gradient(90deg, #b000d5, #770076, #006c9d, #b000d5);
+  background-size: 300% 100%;
+  animation: flow-x 12s ease-in-out infinite alternate;
+}
+
+/* ------------------------------------------------------------------ */
+/* Offer card: rotating gradient border + breathing glow               */
+/* ------------------------------------------------------------------ */
+@property --offer-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+.offer-frame {
+  position: relative;
+  isolation: isolate;
+  padding: 3px;
+  border-radius: 26px;
+}
+.offer-frame::before,
+.offer-frame::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: conic-gradient(from var(--offer-angle), #b000d5, #0074a1, #00b4e3, #00a999, #b000d5);
+  animation: offer-spin 6s linear infinite;
+}
+.offer-frame::after {
+  inset: 6px;
+  filter: blur(26px);
+  opacity: 0.55;
+  animation:
+    offer-spin 6s linear infinite,
+    glow-breathe 4s ease-in-out infinite;
+}
+@keyframes offer-spin {
+  to { --offer-angle: 360deg; }
+}
+@keyframes glow-breathe {
+  0%, 100% { opacity: 0.4; transform: scale(0.98); }
+  50% { opacity: 0.75; transform: scale(1.03); }
+}
+.offer-card {
+  box-shadow: 0 30px 70px -30px rgba(0, 79, 110, 0.55);
+}
+.offer-bar {
+  background: linear-gradient(90deg, #b000d5, #006c9d, #00b4e3, #006c9d, #b000d5);
+  background-size: 300% 100%;
+  animation: flow-x 8s linear infinite;
+}
+.offer-glow {
+  animation: glow-breathe 5s ease-in-out infinite;
+}
+
+/* Light sweep across ribbons, bars and the offer CTA */
+.shine::after,
+.btn-shine::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, 0.45) 50%, transparent 65%);
+  transform: translateX(-120%);
+  animation: sweep 4.5s ease-in-out infinite;
+}
+.btn-shine::after {
+  animation-delay: 1.5s;
+}
+@keyframes sweep {
+  0% { transform: translateX(-120%); }
+  45%, 100% { transform: translateX(120%); }
+}
+
+/* ================================================================== */
+/* ANIMATED SECTION BACKGROUNDS                                        */
+/* ================================================================== */
+
+/* Flowing gradient wash */
+.bg-flow {
+  background-size: 300% 300%;
+  animation: flow-xy 20s ease-in-out infinite alternate;
+}
+.bg-flow-blue {
+  background-image: linear-gradient(
+    120deg,
+    rgba(0, 180, 227, 0.12),
+    rgba(176, 0, 213, 0.07),
+    rgba(0, 116, 161, 0.1),
+    rgba(0, 169, 153, 0.09),
+    rgba(0, 180, 227, 0.12)
+  );
+}
+.bg-flow-violet {
+  background-image: linear-gradient(
+    120deg,
+    rgba(176, 0, 213, 0.12),
+    rgba(0, 180, 227, 0.08),
+    rgba(119, 0, 118, 0.1),
+    rgba(0, 116, 161, 0.08),
+    rgba(176, 0, 213, 0.12)
+  );
+}
+
+/* Drifting colour glows */
+.drift-1,
+.drift-2,
+.drift-3 {
+  will-change: transform;
+}
+.drift-1 { animation: drift-a 18s ease-in-out infinite alternate; }
+.drift-2 { animation: drift-b 22s ease-in-out infinite alternate; }
+.drift-3 { animation: drift-c 26s ease-in-out infinite alternate; }
+@keyframes drift-a {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(-8%, 10%, 0) scale(1.15); }
+  100% { transform: translate3d(6%, -6%, 0) scale(0.95); }
+}
+@keyframes drift-b {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(12%, -8%, 0) scale(1.2); }
+  100% { transform: translate3d(-6%, 4%, 0) scale(1); }
+}
+@keyframes drift-c {
+  0% { transform: translate3d(0, 0, 0) scale(0.9); }
+  50% { transform: translate3d(-14%, -10%, 0) scale(1.1); }
+  100% { transform: translate3d(10%, 8%, 0) scale(1.25); }
+}
+
+/* Marquee band and closing CTA band */
+.marquee-flow {
+  background: linear-gradient(90deg, #0074a1, #006c9d, #770076, #004f6e, #0074a1);
+  background-size: 300% 100%;
+  animation: flow-x 16s ease-in-out infinite alternate;
+}
+.cta-flow {
+  background: linear-gradient(110deg, #00b4e3, #00a999, #00b4e3, #0074a1 85%);
+  background-size: 300% 100%;
+  animation: flow-x 14s ease-in-out infinite alternate;
+}
+
+@keyframes flow-x {
+  from { background-position: 0% 50%; }
+  to { background-position: 100% 50%; }
+}
+@keyframes flow-xy {
+  0% { background-position: 0% 0%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 50% 100%; }
+}
+
+/* Pause background motion while a section is off-screen (set by main.js) */
+.bg-paused .bg-flow,
+.bg-paused .drift-1,
+.bg-paused .drift-2,
+.bg-paused .drift-3,
+.bg-paused .kenburns,
+.bg-paused.marquee-flow,
+.bg-paused.cta-flow {
+  animation-play-state: paused;
+}
+
+/* ================================================================== */
+/* MOBILE & TABLET TUNING                                              */
+/* ================================================================== */
+a,
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (max-width: 767px) {
+  /* Smaller, lighter glows: same look, far less GPU work on phones */
+  .drift-1,
+  .drift-2,
+  .drift-3 {
+    width: 17rem !important;
+    height: 17rem !important;
+    filter: blur(64px) !important;
+  }
+  /* Gentler section wipe that matches the smaller screen */
+  .js [data-wipe] {
+    clip-path: inset(3% 3% 3% 3% round 28px);
+  }
+  /* Softer float distance for the banner chips */
+  @keyframes float {
+    0%, 100% { transform: translate3d(0, 0, 0); }
+    50% { transform: translate3d(0, -6px, 0); }
+  }
+  /* Ken Burns centred on the family in the taller phone crop */
+  .kenburns {
+    transform-origin: 78% 60%;
+  }
+  /* Offer glow kept inside the viewport edge */
+  .offer-frame::after {
+    filter: blur(18px);
+  }
+}
+
+/* Touch devices: no hover-dependent effects linger after a tap */
+@media (hover: none) {
+  .hover\:\[animation-play-state\:paused\]:hover {
+    animation-play-state: running;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Reduced motion: show everything immediately                         */
+/* ------------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  .js [data-reveal] .rv-i,
+  .js [data-stagger] .stg,
+  .js [data-hero] .hero-in {
+    transform: none;
+    opacity: 1;
+  }
+  .js [data-wipe] {
+    clip-path: none;
+  }
+  .shine::after,
+  .btn-shine::after,
+  .live-dot::after,
+  .offer-frame::after {
+    display: none;
+  }
+}
